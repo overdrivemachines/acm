@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 
 using namespace std;
 
@@ -8,21 +9,32 @@ struct Point
 	int y;	
 } a, b, c, p;
 
-struct Line
-{
-	Point p1;
-	Point p2;	
-} ab, bc, ca, ap, bp, cp;
-
 bool isInside()
 {
+	// From http://stackoverflow.com/questions/13300904/determine-whether-point-lies-inside-triangle
+	// http://mathworld.wolfram.com/TriangleInterior.html
 
-	// Does AP intersect BC?
-	
-	// Does BP intersect AC?
-	// Does CP intersect PB?
-	
-	return true;
+	double den = ((b.y - c.y)*(a.x - c.x) + (c.x - b.x)*(a.y - c.y));
+	// Unknown
+	if (den == 0)
+		return false;
+
+	double alpha = ((b.y - c.y)*(p.x - c.x) + (c.x - b.x)*(p.y - c.y)) /
+	        den;
+	double beta = ((c.y - a.y)*(p.x - c.x) + (a.x - c.x)*(p.y - c.y)) /
+	       den;
+	double gamma = 1.0f - alpha - beta;
+
+	// Point is on one of the triangle's sides
+	if ((alpha == 0) || (beta == 0) || (gamma == 0))
+	{
+		return true;
+	}
+
+	if ((alpha > 0) && (beta > 0) && (gamma > 0))
+		return true;
+	else
+		return false;
 }
 
 int main()
